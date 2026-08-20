@@ -147,7 +147,7 @@ svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-l
    Hero (home)
    ========================================================================== */
 .hero{background:#DDDADB;overflow:hidden;}
-.hero__inner{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;min-height:640px;}
+.hero__inner{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;min-height:560px;}
 .hero__content{max-width:600px;padding:40px 0;}
 .hero__title{margin:0 0 22px;font-size:clamp(42px,6vw,80px);font-weight:500;line-height:1.05;color:var(--chocolate);}
 .hero__text{margin:0 0 34px;max-width:500px;font-size:20px;line-height:1.7;color:#5b4a40;}
