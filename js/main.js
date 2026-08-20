@@ -487,7 +487,9 @@
       const dot = document.createElement('div'); dot.className = 'cursor-dot';
       const ring = document.createElement('div'); ring.className = 'cursor-ring';
       document.body.appendChild(dot); document.body.appendChild(ring);
-      let rx = 0, ry = 0, mx = 0, my = 0;
+      // Nascem fora da tela até o primeiro movimento do mouse (evita círculo solto no canto)
+      dot.style.transform = ring.style.transform = 'translate(-200px,-200px)';
+      let rx = -200, ry = -200, mx = -200, my = -200;
       document.addEventListener('mousemove', e => {
         mx = e.clientX; my = e.clientY;
         dot.style.transform = 'translate(' + mx + 'px,' + my + 'px) translate(-50%,-50%)';
