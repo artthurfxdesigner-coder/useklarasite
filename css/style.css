@@ -154,7 +154,7 @@ svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-l
 .hero__actions{display:flex;gap:16px;flex-wrap:wrap;}
 .hero__actions .btn{font-size:18px;font-weight:700;}
 .hero__media{position:relative;align-self:stretch;margin-right:calc(-1 * var(--pad));}
-.hero__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left center;}
+.hero__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;}
 
 /* ==========================================================================
    Product cards / grids
