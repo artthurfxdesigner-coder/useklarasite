@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Use Klara — Elegância em cada escolha</title>
+<meta name="description" content="Loja de moda moderna e elegante. Vestidos, macacões e blusas com layout limpo e vitrine sofisticada.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header" data-active="home"></div>
+
+<main>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__content reveal">
+        <h1 class="hero__title">Elegância em cada escolha</h1>
+        <p class="hero__text">Design de loja de moda moderno e elegante, com layout limpo e vitrine sofisticada. Perfeito para marcas de roupas, boutiques e lojas online.</p>
+        <div class="hero__actions">
+          <a href="vestidos.html" class="btn btn--sand">Comprar agora</a>
+          <a href="#categorias" class="btn btn--white">Explorar coleção</a>
+        </div>
+      </div>
+      <div class="hero__media reveal">
+        <img src="assets/hero.png" alt="Modelo Use Klara" data-ph>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefícios -->
+  <section class="benefits benefits--home">
+    <div class="container">
+      <div class="benefits__grid">
+        <div class="benefit reveal"><span class="benefit__icon"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M1 6h11v10H1z"/><path d="M12 9h4.5l3 3.5V16H12z"/><circle cx="5" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg></span><div><h3 class="benefit__title">Frete grátis</h3><p class="benefit__text">Entre no universo do estilo com peças que definem as tendências de hoje.</p></div></div>
+        <div class="benefit reveal"><span class="benefit__icon"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2" y="13" width="4" height="6" rx="1.5"/><rect x="18" y="13" width="4" height="6" rx="1.5"/><path d="M20 19v1a3 3 0 0 1-3 3h-3"/></svg></span><div><h3 class="benefit__title">Suporte 24/7</h3><p class="benefit__text">Entre no universo do estilo com peças que definem as tendências de hoje.</p></div></div>
+        <div class="benefit reveal"><span class="benefit__icon"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 3 3 8 8 8"/></svg></span><div><h3 class="benefit__title">Trocas fáceis</h3><p class="benefit__text">Entre no universo do estilo com peças que definem as tendências de hoje.</p></div></div>
+        <div class="benefit reveal"><span class="benefit__icon"><svg viewBox="0 0 24 24" width="26" height="26"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><div><h3 class="benefit__title">Compra segura</h3><p class="benefit__text">Entre no universo do estilo com peças que definem as tendências de hoje.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categorias -->
+  <section class="categories" id="categorias">
+    <div class="container">
+      <div class="cat-grid">
+        <a href="macacao.html" class="cat reveal"><img src="assets/cat-macacao.png" alt="Macacão" data-ph><span class="cat__label">MACACÃO</span></a>
+        <a href="vestidos.html" class="cat reveal"><img src="assets/cat-vestidos.png" alt="Vestidos" data-ph><span class="cat__label">VESTIDOS</span></a>
+        <a href="blusas.html" class="cat reveal"><img src="assets/cat-blusas.png" alt="Blusas" data-ph><span class="cat__label">BLUSAS</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Peças em destaque -->
+  <section class="products">
+    <div class="container">
+      <h2 class="section-title section-title--center">Peças em Destaque</h2>
+      <div class="grid grid--4" data-collection="novidades" data-limit="8"></div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter">
+    <div class="container newsletter__inner reveal">
+      <h2 class="newsletter__title">Entre para o Klara Club</h2>
+      <p class="newsletter__text">Cadastre-se e ganhe <strong>20% de desconto</strong> na primeira compra, além de acesso antecipado aos lançamentos.</p>
+      <form class="newsletter__form" id="newsletterForm">
+        <input type="email" placeholder="Digite seu e-mail" required>
+        <button type="submit" class="btn btn--dark">Cadastrar</button>
+      </form>
+      <p class="newsletter__note" id="newsletterNote"></p>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+<script src="js/main.js"></script>
+</body>
+</html>

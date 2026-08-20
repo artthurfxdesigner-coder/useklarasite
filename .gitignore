@@ -1,0 +1,13 @@
+# Ideias/experimentos antigos
+nuvemshop/
+tema-loja/
+assets-figma/
+
+# Credenciais da CLI Nuvemshop — NUNCA versionar
+.nuvem
+
+# Ferramentas / temporários
+.claude/
+node_modules/
+.DS_Store
+Thumbs.db
