@@ -583,7 +583,8 @@ svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-l
 /* ==========================================================================
    UX mobile (padrões de e-commerce): barra de compra fixa + filtros em painel
    ========================================================================== */
-.mobile-buybar,.filter-toggle{display:none;}
+.mobile-buybar,.filter-toggle,.sort-toggle,.sort-sheet,.nav__head,.nav__close,.nav__sub,.searchbar__close{display:none;}
+body.no-scroll{overflow:hidden;}
 
 @media (max-width:860px){
   /* Produto: barra de compra fixa no rodapé */
@@ -619,12 +620,59 @@ svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-l
   .grid--4{grid-template-columns:repeat(3,1fr);}
 }
 @media (max-width:860px){
-  .burger{display:flex;}
-  .nav{position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:var(--marfim);border-bottom:1px solid rgba(92,64,51,.12);padding:0 var(--pad);max-height:0;overflow:hidden;transition:max-height .35s var(--ease);}
-  .nav.is-open{max-height:360px;}
-  .nav__link{padding:14px 0;border-bottom:1px solid rgba(92,64,51,.07);font-size:14px;}
+  .burger{display:flex;order:-1;}
+  .header__inner{justify-content:space-between;}
+
+  /* Menu em gaveta lateral */
+  .nav{position:fixed;top:0;left:0;bottom:0;z-index:105;width:min(320px,86vw);flex-direction:column;gap:0;align-items:stretch;
+    background:var(--marfim);padding:0 24px 24px;transform:translateX(-100%);transition:transform .38s var(--ease);
+    overflow-y:auto;box-shadow:12px 0 40px rgba(65,47,35,.18);}
+  .nav.is-open{transform:translateX(0);}
+  .nav__head{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;margin-bottom:6px;border-bottom:1px solid var(--areia);}
+  .nav__head-title{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--nude);font-weight:500;}
+  .nav__close{display:grid;place-items:center;width:36px;height:36px;font-size:26px;line-height:1;color:var(--taupe);background:var(--clara);border-radius:50%;}
+  .nav__link{padding:15px 0;border-bottom:1px solid rgba(92,64,51,.08);font-size:16px;color:var(--taupe);}
   .nav__link::after{display:none;}
   .nav__cat{width:100%;justify-content:space-between;}
+  .nav__cat.is-open .nav__chev{transform:rotate(180deg);}
+  .nav__sub{display:flex;flex-direction:column;overflow:hidden;max-height:0;transition:max-height .35s var(--ease);}
+  .nav__sub.is-open{max-height:460px;}
+  .nav__sub a{padding:12px 0 12px 16px;font-size:14px;color:var(--nude);border-bottom:1px solid rgba(92,64,51,.05);}
+
+  /* Busca em tela cheia */
+  .searchbar{position:fixed;inset:0;z-index:115;max-height:none;height:100vh;background:var(--marfim);transform:translateY(-100%);transition:transform .35s var(--ease);}
+  .searchbar.is-open{max-height:none;transform:translateY(0);}
+  .searchbar .container{height:auto;display:flex;align-items:center;padding-top:26px;}
+  .searchbar__form{width:100%;border-bottom:2px solid var(--areia);padding:12px 0;gap:12px;}
+  .searchbar__form input{font-size:19px;}
+  .searchbar__close{display:grid;place-items:center;margin-left:auto;width:40px;height:40px;font-size:28px;line-height:1;color:var(--taupe);background:none;}
+
+  /* Header compacto ao rolar */
+  .announcement{max-height:60px;overflow:hidden;transition:max-height .3s var(--ease);}
+  body.is-scrolled .announcement{max-height:0;}
+  body.is-scrolled .header__inner{height:60px;}
+
+  /* Mega-menu desktop escondido no mobile (usa a gaveta) */
+  .megamenu{display:none;}
+
+  /* Toolbar da listagem: Filtrar + Ordenar */
+  .listing__toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch;}
+  .listing__count{display:none;}
+  .listing__toolbar .select{display:none;}
+  .sort-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border:1px solid var(--areia);border-radius:6px;font-size:14px;font-weight:500;color:var(--taupe);background:var(--marfim);}
+  .sort-toggle svg{width:16px;height:16px;}
+  .filter-toggle{justify-content:center;}
+
+  /* Bottom-sheet de ordenação */
+  .sort-sheet{display:block;position:fixed;left:0;right:0;bottom:0;z-index:110;background:var(--marfim);border-radius:18px 18px 0 0;
+    padding:8px var(--pad) calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -14px 40px rgba(65,47,35,.22);
+    transform:translateY(102%);transition:transform .38s var(--ease);}
+  .sort-sheet.is-open{transform:translateY(0);}
+  .sort-sheet__head{display:flex;align-items:center;justify-content:space-between;padding:16px 4px 12px;border-bottom:1px solid var(--areia);font-size:15px;font-weight:600;color:var(--chocolate);}
+  .sort-sheet__close{display:grid;place-items:center;width:34px;height:34px;font-size:24px;line-height:1;color:var(--taupe);background:var(--clara);border-radius:50%;}
+  .sort-opt{display:block;width:100%;text-align:left;padding:16px 4px;font-size:15px;color:var(--taupe);border-bottom:1px solid rgba(92,64,51,.06);background:none;}
+  .sort-opt.is-active{color:var(--chocolate);font-weight:600;}
+  .sort-opt.is-active::after{content:'✓';float:right;color:var(--dourado);}
   .megamenu__inner{grid-template-columns:1fr;gap:24px;padding:24px var(--pad) 30px;}
   .megamenu__cards{grid-template-columns:1fr 1fr;}
   .megamenu__links{border-left:0;border-top:1px solid var(--areia);padding-left:0;padding-top:20px;}

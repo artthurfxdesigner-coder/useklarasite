@@ -129,12 +129,17 @@
     host.innerHTML =
       '<div class="announcement"><p>Ganhe <strong>20% de desconto</strong> na primeira compra e <strong>Frete Grátis</strong> em pedidos acima de R$ 250.</p></div>' +
       '<header class="header" id="header"><div class="container header__inner">' +
+        '<button class="icon-btn burger" id="burger" aria-label="Abrir menu"><span></span><span></span><span></span></button>' +
         '<a href="index.html" class="logo"><img src="assets/logo.svg" alt="Use Klara"></a>' +
         '<nav class="nav" id="nav">' +
+          '<div class="nav__head"><span class="nav__head-title">Menu</span><button class="nav__close" id="navClose" aria-label="Fechar menu">&times;</button></div>' +
           NAV.map(n => {
             if (n.key === 'cat') {
               return '<button class="nav__link nav__cat' + (n.key === active ? ' is-active' : '') + '" id="catTrigger" aria-haspopup="true" aria-expanded="false">' + n.label +
-                '<svg class="nav__chev" viewBox="0 0 24 24" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>';
+                '<svg class="nav__chev" viewBox="0 0 24 24" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>' +
+                '<div class="nav__sub" id="navSub">' +
+                  CAT_LINKS.map((l, i) => '<a href="' + ((i < 3) ? CATS[i].href : 'vestidos.html') + '">' + l + '</a>').join('') +
+                '</div>';
             }
             return '<a href="' + n.href + '" class="nav__link' + (n.key === active ? ' is-active' : '') + '">' + n.label + '</a>';
           }).join('') +
@@ -142,11 +147,11 @@
         '<div class="header__actions">' +
           '<button class="icon-btn" id="searchToggle" aria-label="Buscar">' + svg(ICON.search) + '</button>' +
           '<button class="icon-btn" id="cartToggle" aria-label="Carrinho">' + svg(ICON.bag) + '<span class="icon-btn__badge" id="cartCount">0</span></button>' +
-          '<button class="icon-btn burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>' +
         '</div>' +
       '</div>' +
       '<div class="searchbar" id="searchbar"><div class="container"><form class="searchbar__form" onsubmit="return false;">' +
-        svg(ICON.search) + '<input type="search" id="searchInput" placeholder="Buscar produtos..."></form></div></div>' +
+        svg(ICON.search) + '<input type="search" id="searchInput" placeholder="Buscar produtos...">' +
+        '<button type="button" class="searchbar__close" id="searchClose" aria-label="Fechar busca">&times;</button></form></div></div>' +
       megamenuHTML() +
       '</header>';
   }
@@ -275,11 +280,34 @@
    * ------------------------------------------------------------------ */
   function wireHeader() {
     const header = $('#header');
-    if (header) { const onScroll = () => header.classList.toggle('is-stuck', window.scrollY > 8); window.addEventListener('scroll', onScroll, { passive:true }); onScroll(); }
-    const burger = $('#burger'), nav = $('#nav');
-    if (burger && nav) burger.addEventListener('click', () => { burger.classList.toggle('is-open'); nav.classList.toggle('is-open'); });
-    const st = $('#searchToggle'), sb = $('#searchbar'), si = $('#searchInput');
-    if (st && sb) st.addEventListener('click', () => { const o = sb.classList.toggle('is-open'); if (o && si) setTimeout(() => si.focus(), 200); });
+    if (header) {
+      const onScroll = () => {
+        header.classList.toggle('is-stuck', window.scrollY > 8);
+        document.body.classList.toggle('is-scrolled', window.scrollY > 60); // header compacto ao rolar (mobile)
+      };
+      window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+    }
+
+    const overlay = $('#overlay');
+
+    // Menu em gaveta lateral (mobile)
+    const burger = $('#burger'), nav = $('#nav'), navClose = $('#navClose');
+    const openNav = () => { nav.classList.add('is-open'); if (burger) burger.classList.add('is-open'); if (overlay) overlay.classList.add('is-open'); document.body.classList.add('no-scroll'); };
+    const closeNav = () => { nav.classList.remove('is-open'); if (burger) burger.classList.remove('is-open'); if (overlay) overlay.classList.remove('is-open'); document.body.classList.remove('no-scroll'); };
+    if (burger && nav) burger.addEventListener('click', () => { nav.classList.contains('is-open') ? closeNav() : openNav(); });
+    if (navClose) navClose.addEventListener('click', closeNav);
+    if (overlay) overlay.addEventListener('click', closeNav);
+    $$('#nav a').forEach(a => a.addEventListener('click', closeNav));
+
+    // Busca em tela cheia (mobile) / dropdown (desktop)
+    const st = $('#searchToggle'), sb = $('#searchbar'), si = $('#searchInput'), sc = $('#searchClose');
+    const openSearch = () => { sb.classList.add('is-open'); document.body.classList.add('no-scroll'); if (si) setTimeout(() => si.focus(), 150); };
+    const closeSearch = () => { sb.classList.remove('is-open'); document.body.classList.remove('no-scroll'); };
+    if (st && sb) st.addEventListener('click', () => { sb.classList.contains('is-open') ? closeSearch() : openSearch(); });
+    if (sc) sc.addEventListener('click', closeSearch);
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeNav(); closeSearch(); } });
+
     if (si) si.addEventListener('input', () => {
       const term = si.value.trim().toLowerCase();
       $$('[data-collection] .card, .products .card').forEach(card => {
@@ -373,29 +401,63 @@
     const shut = () => { filters.classList.remove('is-open'); overlay.classList.remove('is-open'); };
     toggle.addEventListener('click', open);
     close.addEventListener('click', shut);
-    overlay.addEventListener('click', shut);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
+
+    // "Ordenar" como bottom-sheet (mobile), a partir do <select> da toolbar
+    const select = $('#sort') || toolbar.querySelector('select');
+    if (select) {
+      const sortBtn = document.createElement('button');
+      sortBtn.className = 'sort-toggle';
+      sortBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M7 4v16M7 20l-3-3M7 4l3 3M17 20V4M17 4l3 3M17 20l-3-3"/></svg>Ordenar';
+      toolbar.appendChild(sortBtn);
+
+      const sheet = document.createElement('div');
+      sheet.className = 'sort-sheet';
+      sheet.innerHTML = '<div class="sort-sheet__head"><span>Ordenar por</span><button class="sort-sheet__close" aria-label="Fechar">&times;</button></div>' +
+        [...select.options].map((o, i) => '<button class="sort-opt' + (o.selected ? ' is-active' : '') + '" data-i="' + i + '">' + o.textContent + '</button>').join('');
+      document.body.appendChild(sheet);
+
+      const openSort = () => { sheet.classList.add('is-open'); overlay.classList.add('is-open'); };
+      const shutSort = () => { sheet.classList.remove('is-open'); overlay.classList.remove('is-open'); };
+      sortBtn.addEventListener('click', openSort);
+      sheet.querySelector('.sort-sheet__close').addEventListener('click', shutSort);
+      sheet.querySelectorAll('.sort-opt').forEach(b => b.addEventListener('click', () => {
+        select.selectedIndex = +b.dataset.i; select.dispatchEvent(new Event('change'));
+        sheet.querySelectorAll('.sort-opt').forEach(x => x.classList.remove('is-active')); b.classList.add('is-active');
+        shutSort();
+      }));
+      overlay.addEventListener('click', () => { shut(); shutSort(); });
+    } else {
+      overlay.addEventListener('click', shut);
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { shut(); const ss = $('.sort-sheet'); if (ss) ss.classList.remove('is-open'); } });
   }
 
   /* Mega-menu de categorias (popup) */
   function wireMegamenu() {
-    const trigger = $('#catTrigger'), mm = $('#megamenu'), header = $('#header');
-    if (!trigger || !mm) return;
-    const open = () => { mm.classList.add('is-open'); trigger.classList.add('is-open'); trigger.setAttribute('aria-expanded', 'true'); };
-    const close = () => { mm.classList.remove('is-open'); trigger.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); };
-    trigger.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); mm.classList.contains('is-open') ? close() : open(); });
-    mm.addEventListener('click', e => e.stopPropagation());
-    document.addEventListener('click', e => { if (!header.contains(e.target)) close(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-    window.addEventListener('scroll', () => { if (mm.classList.contains('is-open')) close(); }, { passive: true });
-    // hover no desktop
-    if (window.matchMedia('(min-width:861px)').matches) {
+    const trigger = $('#catTrigger'), mm = $('#megamenu'), header = $('#header'), sub = $('#navSub');
+    if (!trigger) return;
+    const desktop = () => window.matchMedia('(min-width:861px)').matches;
+    const openMM = () => { mm.classList.add('is-open'); trigger.classList.add('is-open'); trigger.setAttribute('aria-expanded', 'true'); };
+    const closeMM = () => { mm.classList.remove('is-open'); trigger.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); };
+
+    trigger.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      if (desktop()) { mm && (mm.classList.contains('is-open') ? closeMM() : openMM()); }
+      else if (sub) { const o = sub.classList.toggle('is-open'); trigger.classList.toggle('is-open', o); trigger.setAttribute('aria-expanded', o ? 'true' : 'false'); }
+    });
+
+    if (mm) mm.addEventListener('click', e => e.stopPropagation());
+    document.addEventListener('click', e => { if (header && !header.contains(e.target)) closeMM(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMM(); });
+    window.addEventListener('scroll', () => { if (mm && mm.classList.contains('is-open')) closeMM(); }, { passive: true });
+
+    // hover no desktop (só o botão Categorias)
+    if (desktop() && mm) {
       let t;
-      const wrap = trigger.parentElement;
-      wrap.addEventListener('mouseenter', () => { clearTimeout(t); open(); });
-      wrap.addEventListener('mouseleave', () => { t = setTimeout(close, 180); });
+      trigger.addEventListener('mouseenter', () => { clearTimeout(t); openMM(); });
+      trigger.addEventListener('mouseleave', () => { t = setTimeout(closeMM, 180); });
       mm.addEventListener('mouseenter', () => clearTimeout(t));
-      mm.addEventListener('mouseleave', () => { t = setTimeout(close, 180); });
+      mm.addEventListener('mouseleave', () => { t = setTimeout(closeMM, 180); });
     }
   }
 
