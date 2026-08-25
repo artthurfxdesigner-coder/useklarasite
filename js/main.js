@@ -324,8 +324,12 @@
     const dec = $('#pdpDec'), inc = $('#pdpInc');
     if (dec) dec.addEventListener('click', () => { n = Math.max(1, n - 1); q.textContent = n; });
     if (inc) inc.addEventListener('click', () => { n += 1; q.textContent = n; });
+    const addAll = () => { for (let k = 0; k < n; k++) addToCart(pdp.dataset.name, parseFloat(pdp.dataset.price)); };
     const add = $('#pdpAdd');
-    if (add) add.addEventListener('click', () => { for (let k = 0; k < n; k++) addToCart(pdp.dataset.name, parseFloat(pdp.dataset.price)); });
+    if (add) add.addEventListener('click', addAll);
+    // Barra de compra fixa (mobile)
+    const addMobile = $('#pdpAddMobile');
+    if (addMobile) { addMobile.addEventListener('click', addAll); document.body.classList.add('has-buybar'); }
     $$('.tabnav button').forEach(b => b.addEventListener('click', () => {
       $$('.tabnav button').forEach(x => x.classList.remove('is-active'));
       $$('.tabpanel').forEach(x => x.classList.remove('is-active'));
@@ -344,12 +348,33 @@
     }));
   }
 
-  /* Category filters (visual) */
+  /* Category filters (visual) + painel de filtros no mobile */
   function wireFilters() {
     $$('.filter__sizes button, .filter__colors button').forEach(b => b.addEventListener('click', () => {
       const sib = b.parentElement.children;
       [...sib].forEach(x => x.classList.remove('is-active')); b.classList.add('is-active');
     }));
+
+    const filters = $('.filters'), toolbar = $('.listing__toolbar'), overlay = $('#overlay');
+    if (!filters || !toolbar || !overlay) return;
+
+    // Botão "Filtrar" na toolbar (aparece só no mobile via CSS)
+    const toggle = document.createElement('button');
+    toggle.className = 'filter-toggle';
+    toggle.innerHTML = '<svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>Filtrar';
+    toolbar.insertBefore(toggle, toolbar.firstChild);
+
+    // Botão de fechar dentro do painel
+    const close = document.createElement('button');
+    close.className = 'filters__close'; close.setAttribute('aria-label', 'Fechar filtros'); close.innerHTML = '&times;';
+    filters.insertBefore(close, filters.firstChild);
+
+    const open = () => { filters.classList.add('is-open'); overlay.classList.add('is-open'); };
+    const shut = () => { filters.classList.remove('is-open'); overlay.classList.remove('is-open'); };
+    toggle.addEventListener('click', open);
+    close.addEventListener('click', shut);
+    overlay.addEventListener('click', shut);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
   }
 
   /* Mega-menu de categorias (popup) */

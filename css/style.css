@@ -580,6 +580,36 @@ svg{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-l
 /* ==========================================================================
    Responsivo
    ========================================================================== */
+/* ==========================================================================
+   UX mobile (padrões de e-commerce): barra de compra fixa + filtros em painel
+   ========================================================================== */
+.mobile-buybar,.filter-toggle{display:none;}
+
+@media (max-width:860px){
+  /* Produto: barra de compra fixa no rodapé */
+  .mobile-buybar{display:flex;align-items:center;gap:14px;position:fixed;left:0;right:0;bottom:0;z-index:85;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--marfim);
+    border-top:1px solid var(--areia);box-shadow:0 -6px 20px rgba(65,47,35,.12);}
+  .mobile-buybar__price{display:flex;flex-direction:column;line-height:1.15;}
+  .mobile-buybar__price .now{font-size:18px;font-weight:600;color:var(--chocolate);}
+  .mobile-buybar__price .old{font-size:12px;color:var(--nude);text-decoration:line-through;}
+  .mobile-buybar .btn{flex:1;padding:15px;}
+  body.has-buybar{padding-bottom:80px;}
+
+  /* Listagem: filtros viram painel deslizante acionado por botão */
+  .filter-toggle{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:1px solid var(--areia);
+    border-radius:6px;font-size:14px;font-weight:500;color:var(--taupe);background:var(--marfim);}
+  .filter-toggle svg{width:16px;height:16px;}
+  .listing__toolbar{position:sticky;top:76px;z-index:40;background:var(--marfim);padding:12px 0;margin-bottom:12px;
+    border-bottom:1px solid var(--areia);}
+  .filters{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:110;max-height:85vh;overflow-y:auto;
+    background:var(--marfim);border-radius:18px 18px 0 0;padding:26px var(--pad) 30px;
+    box-shadow:0 -14px 40px rgba(65,47,35,.22);transform:translateY(102%);transition:transform .38s var(--ease);}
+  .filters.is-open{transform:translateY(0);}
+  .filters__close{position:absolute;top:16px;right:16px;width:34px;height:34px;display:grid;place-items:center;
+    font-size:24px;line-height:1;color:var(--taupe);background:var(--clara);border-radius:50%;}
+}
+
 @media (max-width:1100px){
   .pdp__grid{grid-template-columns:1fr;gap:40px;}
   .cartpage__grid{grid-template-columns:1fr;}
